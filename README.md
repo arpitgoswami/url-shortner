@@ -2,8 +2,6 @@
 
 This is a fun, non-monetary version of the popular Mines game inspired by stake.games. The game allows you to place a bet (just for fun, no actual money is required) and attempt to avoid mines while uncovering diamonds to increase your multiplier and cash out.
 
----
-
 ## How to Play
 
 1. **Place Your Bet:**  
@@ -20,8 +18,6 @@ This is a fun, non-monetary version of the popular Mines game inspired by stake.
    
 5. **Cash Out:**  
    If you want to stop before hitting a mine, you can click the "Cash Out" button to claim your winnings based on your current multiplier.
-
----
 
 ## Game Features
 
