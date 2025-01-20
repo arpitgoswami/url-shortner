@@ -53,7 +53,7 @@ This game is purely for entertainment purposes. No real money is involved in any
 
 ## Credits
 
-- Inspired by [stake.games Mines](https://stake.com).
+- Inspired by [stake.games](https://stake.com).
 - Sound effects from [SoundJay](https://www.soundjay.com).
 
 
