@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mines Betting Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-gray-900 text-white flex items-center justify-center h-screen"
+  >
+    <div class="w-96 p-6 bg-gray-800 rounded-lg shadow-lg">
+      <h1 class="text-2xl font-bold text-center mb-4">Mines Betting Game</h1>
+      <div class="mb-4">
+        <label class="block text-gray-300">Enter your Bet Amount</label>
+        <input
+          id="betAmount"
+          type="number"
+          class="w-full p-2 bg-gray-700 rounded-lg text-white focus:outline-none"
+          placeholder="Enter your bet"
+          min="1"
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-300">Number of Mines</label>
+        <input
+          id="mineCount"
+          type="number"
+          class="w-full p-2 bg-gray-700 rounded-lg text-white focus:outline-none"
+          placeholder="Enter number of mines"
+          min="1"
+          max="24"
+        />
+      </div>
+      <button
+        id="startGameBtn"
+        onclick="startGame()"
+        class="w-full py-2 bg-green-500 rounded-lg hover:bg-green-600"
+      >
+        Start Game
+      </button>
+      <button
+        onclick="cashOut()"
+        id="cashOutBtn"
+        class="w-full py-2 mt-4 bg-yellow-500 rounded-lg hover:bg-yellow-600 hidden"
+      >
+        Cash Out
+      </button>
+      <div class="mt-4 text-center text-xl" id="multiplierDisplay">
+        Multiplier: 1x
+      </div>
+      <div id="gameBoard" class="grid grid-cols-5 gap-2 mt-4"></div>
+      <div id="resultDisplay" class="text-center mt-4 hidden">
+        <h2 id="resultMessage" class="text-lg font-semibold"></h2>
+        <p id="payoutMessage" class="text-lg"></p>
+      </div>
+    </div>
+
+    <audio
+      id="explosionSound"
+      src="https://www.soundjay.com/buttons/sounds/button-10.mp3"
+    ></audio>
+    <audio
+      id="diamondSound"
+      src="https://www.soundjay.com/buttons/sounds/button-3.mp3"
+    ></audio>
+
+    <script>
+      let mines = [];
+      let revealedTiles = 0;
+      let gameStarted = false;
+      let multiplier = 1;
+      let betAmount = 0;
+
+      function startGame() {
+        // Disable the Start Game button after the game starts
+        document.getElementById("startGameBtn").disabled = true;
+
+        betAmount = parseFloat(document.getElementById("betAmount").value);
+        const mineCount = parseInt(document.getElementById("mineCount").value);
+
+        if (isNaN(betAmount) || betAmount <= 0) {
+          alert("Please enter a valid bet amount.");
+          return;
+        }
+
+        if (isNaN(mineCount) || mineCount <= 0 || mineCount >= 25) {
+          alert("Please enter a valid number of mines (1-24).");
+          return;
+        }
+
+        mines = Array(25).fill(0);
+        for (let i = 0; i < mineCount; i++) {
+          let position;
+          do {
+            position = Math.floor(Math.random() * 25);
+          } while (mines[position] === 1);
+          mines[position] = 1;
+        }
+
+        revealedTiles = 0;
+        multiplier = 1; // Reset multiplier at the start of a new game
+        document.getElementById(
+          "multiplierDisplay"
+        ).innerText = `Multiplier: ${multiplier}x`;
+        document.getElementById("resultDisplay").classList.add("hidden");
+        document.getElementById("cashOutBtn").classList.remove("hidden");
+        gameStarted = true;
+        renderBoard();
+      }
+
+      function revealTile(index) {
+        if (!gameStarted) return;
+
+        const tile = document.getElementById(`tile-${index}`);
+        if (mines[index] === 1) {
+          // Mine hit: Game over, reset multiplier and show result
+          tile.classList.add("bg-red-500");
+          tile.innerText = "💣";
+          document.getElementById("explosionSound").play();
+          gameStarted = false;
+          const resultMessage = `You hit a mine! You lost your bet of $${betAmount}.`;
+          const payoutMessage = `Payout: $0`;
+          showResult(resultMessage, payoutMessage);
+          document.getElementById("cashOutBtn").classList.add("hidden");
+          document.getElementById("startGameBtn").disabled = false; // Re-enable Start Game button
+        } else {
+          // Diamond hit: Increase multiplier and continue the game
+          tile.classList.add("bg-green-500");
+          tile.innerText = "💎";
+          document.getElementById("diamondSound").play();
+          revealedTiles++;
+          multiplier++; // Increase multiplier for each successful diamond click
+          document.getElementById(
+            "multiplierDisplay"
+          ).innerText = `Multiplier: ${multiplier}x`;
+        }
+      }
+
+      function cashOut() {
+        if (!gameStarted) return;
+
+        const payout = betAmount * multiplier;
+        const resultMessage = `You cashed out! Your multiplier was ${multiplier}x.`;
+        const payoutMessage = `Payout: $${payout.toFixed(2)}`;
+        showResult(resultMessage, payoutMessage);
+        gameStarted = false;
+        document.getElementById("cashOutBtn").classList.add("hidden");
+        document.getElementById("startGameBtn").disabled = false; // Re-enable Start Game button
+      }
+
+      function showResult(resultMessage, payoutMessage) {
+        document.getElementById("resultMessage").innerText = resultMessage;
+        document.getElementById("payoutMessage").innerText = payoutMessage;
+        document.getElementById("resultDisplay").classList.remove("hidden");
+      }
+
+      function renderBoard() {
+        const board = document.getElementById("gameBoard");
+        board.innerHTML = "";
+        for (let i = 0; i < 25; i++) {
+          board.innerHTML += `<div id="tile-${i}" onclick="revealTile(${i})" class="tile w-16 h-16 bg-gray-600 flex items-center justify-center cursor-pointer rounded-lg transition-transform duration-300 transform hover:scale-110"></div>`;
+        }
+      }
+    </script>
+  </body>
+</html>
