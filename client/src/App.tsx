@@ -9,7 +9,7 @@ function App() {
     e.preventDefault();
 
     axios
-      .post("http://localhost:8080/api/short", { website: url })
+      .post("https://stake-mines-1.onrender.com/api/short", { website: url })
       .then((res) => setData(res.data))
       .catch((err) => console.error("Error:", err));
   };
@@ -30,7 +30,9 @@ function App() {
           />
           <button type="submit">Submit</button>
         </form>
-        {data && <p>Shortened URL: {data.id}</p>}
+        {data && (
+          <p>Shortened URL: https://stake-mines-1.onrender.com/{data.id}</p>
+        )}
       </div>
     </>
   );

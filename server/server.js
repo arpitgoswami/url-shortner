@@ -15,7 +15,9 @@ dotenv.config();
 PORT = process.env.PORT;
 
 mongoose
-  .connect("mongodb://localhost:27017/")
+  .connect(
+    "mongodb+srv://syiedelta:TuD_i%40z9wuR9FJm@primary-cluster.lajeaaa.mongodb.net/"
+  )
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log("Error: ", err));
 
