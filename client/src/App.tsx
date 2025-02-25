@@ -4,14 +4,12 @@ import "./index.css";
 import toast, { Toaster } from "react-hot-toast";
 
 function App() {
-  const [url, setUrl] = useState<string>(
-    "https://gradienty.codes/animated-icons"
-  );
+  const [url, setUrl] = useState<string>("");
   const [data, setData] = useState<{ id: string } | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const [url_base, setUrlBase] = useState<string>(
-    " https://stake-mines-1.onrender.com"
+    "https://stake-mines-1.onrender.com"
   );
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -55,7 +53,7 @@ function App() {
       </div>
 
       <div className="mb-12">
-        {data.id && (
+        {data?.id && (
           <div className="text-gray-500 bg-black/50 hover:-translate-y-1 duration-200 p-8 rounded-lg space-y-3 text-sm max-w-2xl">
             <div className="flex justify-between">
               <div className="flex items-center">
