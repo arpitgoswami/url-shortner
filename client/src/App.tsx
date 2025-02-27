@@ -1,16 +1,14 @@
 import { FormEvent, useState } from "react";
 import axios from "axios";
 import "./index.css";
-import toast, { Toaster } from "react-hot-toast";
+// import toast, { Toaster } from "react-hot-toast";
 
 function App() {
   const [url, setUrl] = useState<string>("");
   const [data, setData] = useState<{ id: string } | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [url_base, setUrlBase] = useState<string>(
-    "https://stake-mines-1.onrender.com"
-  );
+  const url_base = "https://stake-mines-1.onrender.com";
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,7 +31,6 @@ function App() {
     if (data) {
       const shortUrl = `${url_base}/${data.id}`;
       navigator.clipboard.writeText(shortUrl);
-      toast.success("Copied to clipboard!");
     }
   };
 
