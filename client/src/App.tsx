@@ -1,6 +1,5 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import axios from "axios";
-//import toast, { Toaster } from "react-hot-toast";
 import {
   Link2,
   Copy,
@@ -9,6 +8,8 @@ import {
   ExternalLink,
   LinkIcon,
   Loader,
+  QrCode,
+  LockKeyhole,
 } from "lucide-react";
 import "./index.css";
 
@@ -18,8 +19,15 @@ function App() {
   const [loading, setLoading] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [qrCodeSvg, setQrCodeSvg] = useState<string>("");
 
   const url_base = "https://stake-mines-1.onrender.com";
+
+  useEffect(() => {
+    if (data?.id) {
+      generateQrCode();
+    }
+  }, [data]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,10 +39,8 @@ function App() {
       });
 
       setData(response.data);
-      // toast.success("URL shortened successfully!");
     } catch (error) {
       console.error("Error:", error);
-      //toast.error("Failed to shorten URL. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -45,7 +51,6 @@ function App() {
       const shortUrl = `${url_base}/${data.id}`;
       navigator.clipboard.writeText(shortUrl);
       setCopied(true);
-      // toast.success("URL copied to clipboard!");
 
       setTimeout(() => {
         setCopied(false);
@@ -53,50 +58,42 @@ function App() {
     }
   };
 
+  const generateQrCode = async () => {
+    if (data) {
+      const shortUrl = `${url_base}/${data.id}`;
+
+      try {
+        // Using QR Server API
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+          shortUrl
+        )}`;
+        setQrCodeSvg(qrCodeUrl);
+      } catch (error) {
+        console.error("Error generating QR code:", error);
+      }
+    }
+  };
+
   return (
     <div className="bg-gradient-to-br from-gray-900 via-blue-950 to-indigo-900 min-h-screen text-white flex flex-col items-center p-6 md:p-12">
-      {/* <Toaster
-        position="top-right"
-        toastOptions={{
-          success: {
-            style: {
-              background: "#1e293b",
-              color: "#fff",
-              border: "1px solid rgba(59, 130, 246, 0.5)",
-            },
-            iconTheme: {
-              primary: "#38bdf8",
-              secondary: "#1e293b",
-            },
-          },
-          error: {
-            style: {
-              background: "#1e293b",
-              color: "#fff",
-              border: "1px solid rgba(239, 68, 68, 0.5)",
-            },
-            iconTheme: {
-              primary: "#ef4444",
-              secondary: "#1e293b",
-            },
-          },
-        }}
-      /> */}
-
       <div className="max-w-4xl w-full">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center mb-6">
-            <LinkIcon className="text-blue-400 mr-2" size={28} />
-            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-500">
-              URL SHORTENER
+        <div className="text-center mb-8 space-y-4">
+          <div className="inline-flex items-center mb-8">
+            <h1 className="text-4xl font-extrabold bg-gradient-to-tl from-blue-400 via-blue-600 to-blue-800 bg-clip-text text-transparent">
+              Url Shortner
             </h1>
-            <span className="ml-3 bg-blue-600 text-white text-xs px-2 py-1 rounded-full font-semibold">
-              BETA
+            <span className="ml-3 bg-blue-600 text-white text-xs px-2 py-1 rounded font-semibold">
+              BETA RELEASE
             </span>
           </div>
 
-          <p className="text-2xl md:text-4xl font-medium text-gray-100 max-w-2xl mx-auto leading-tight">
-            Transform your long URLs into brief, shareable links.
+          <p className="text-2xl md:text-5xl font-bold text-gray-100 max-w-2xl mx-auto leading-tight">
+            Build shorter digital links ..
+          </p>
+          <p className="text-xs md:text-sm font-medium text-gray-100 max-w-3xl mx-auto leading-tight">
+            Use our URL shortener, QR Codes, and Sharing Feature to engage your
+            audience and connect them to the right information. Build and share
+            everything with our Link Shortener Platform.
           </p>
         </div>
 
@@ -104,12 +101,12 @@ function App() {
           <div
             className={`${
               isFocused ? "animate-gradient-rotate opacity-100" : "opacity-0"
-            } absolute -inset-0.5 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 rounded-xl blur transition-all duration-300`}
+            } absolute -inset-0.5 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 rounded blur transition-all duration-300`}
           ></div>
 
           <form
             onSubmit={handleSubmit}
-            className="bg-gray-800/40 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg border border-gray-700/50 flex flex-col md:flex-row w-full relative"
+            className="bg-gray-800/40 backdrop-blur-sm rounded overflow-hidden shadow-lg border border-gray-700/50 flex flex-col md:flex-row w-full relative"
           >
             <div className="flex items-center flex-grow bg-gray-900">
               <Link2 className="text-gray-400 ml-4" size={20} />
@@ -120,7 +117,7 @@ function App() {
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 placeholder="Enter the URL you want to shorten..."
-                className="flex-grow p-4 md:p-6 bg-transparent outline-none text-gray-100 placeholder-gray-400 text-lg w-full"
+                className="flex-grow p-4 md:py-6 bg-transparent outline-none text-gray-100 placeholder-gray-400 text-lg w-full"
                 required
                 disabled={data ? true : false}
               />
@@ -130,7 +127,7 @@ function App() {
               disabled={loading}
               className={`${
                 loading ? "bg-blue-700" : "bg-blue-600 hover:bg-blue-500"
-              } text-white font-semibold px-8 py-4 md:py-0 transition-colors duration-300 flex items-center justify-center`}
+              } cursor-pointer text-white font-semibold px-8 py-4 md:py-0 transition-colors duration-300 flex items-center justify-center`}
             >
               {loading ? (
                 <span className="flex items-center">
@@ -148,64 +145,105 @@ function App() {
         </div>
 
         {data?.id && (
-          <div className="bg-gray-900 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-gray-700/50 transform transition-all duration-300 hover:shadow-blue-900/20 w-full">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-              <div className="flex items-center mb-2 md:mb-0">
-                <div className="mr-3 h-2 w-2 rounded-full bg-green-400 animate-pulse"></div>
+          <div className="bg-gray-900 backdrop-blur-sm rounded p-6 shadow-lg border border-gray-700/50 transform transition-all duration-300 hover:shadow-blue-900/20 w-full">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+              <div className="flex items-center mb-6 md:mb-0">
+                <div className="mr-3 h-2 w-2 rounded bg-green-400 animate-pulse"></div>
                 <Link2 className="text-blue-400 mr-2" size={16} />
                 <a
                   href={`${url_base}/${data.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold text-blue-400 hover:text-blue-300 transition-colors duration-200 text-lg flex items-center"
+                  className="font-semibold text-blue-400 hover:text-blue-300 transition-colors duration-200 text-xs md:text-lg flex items-center"
                 >
                   {url_base}/{data.id}
                   <ExternalLink className="ml-2" size={14} />
                 </a>
               </div>
 
-              <div className="text-gray-300 text-sm font-medium bg-green-600/20 px-3 py-1 rounded-full flex items-center">
+              <div className="text-white text-sm font-medium bg-green-600 px-3 py-1 rounded flex items-center">
                 <Check className="mr-1" size={14} />
                 Successfully Created
               </div>
             </div>
 
-            <div className="mb-4 p-3 bg-gray-700/30 rounded-lg break-all text-gray-200 border border-gray-600/30">
+            <div className="mb-4 p-3 bg-gray-700/30 rounded break-all text-gray-200 border border-gray-600/30">
               {url}
             </div>
 
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-              <div className="text-gray-400 text-sm mb-2 md:mb-0">
-                <span className="inline-flex items-center">
-                  <Clock className="mr-1" size={16} />
-                  Never Expires
-                </span>
-              </div>
-              <button
-                onClick={handleCopy}
-                className={`${
-                  copied ? "bg-green-600" : "bg-blue-600 hover:bg-blue-500"
-                } text-white px-4 py-2 rounded-lg transition-colors duration-300 flex items-center`}
-              >
-                {copied ? (
-                  <>
-                    <Check className="mr-1" size={16} />
-                    Copied!
-                  </>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              {/* QR Code Display */}
+              <div className="bg-gray-800 p-4 rounded flex flex-col items-center">
+                <div className="flex items-center mb-3">
+                  <QrCode className="text-blue-400 mr-2" size={20} />
+                  <span className="font-medium text-blue-400">QR Code</span>
+                </div>
+                {qrCodeSvg ? (
+                  <img
+                    src={qrCodeSvg}
+                    alt="QR Code for shortened URL"
+                    className="w-full max-w-xs bg-white p-2 rounded"
+                  />
                 ) : (
-                  <>
-                    <Copy className="mr-1" size={16} />
-                    Copy URL
-                  </>
+                  <div className="w-full h-48 flex items-center justify-center">
+                    <Loader className="animate-spin text-blue-400" size={32} />
+                  </div>
                 )}
-              </button>
+                <p className="text-gray-400 text-xs mt-2 text-center">
+                  Scan this QR code to access your shortened URL
+                </p>
+              </div>
+
+              {/* URL Stats and Copy Button */}
+              <div className="flex flex-col justify-between">
+                <div>
+                  <h3 className="text-lg font-medium text-blue-400 mb-3">
+                    URL Details
+                  </h3>
+                  <div className="bg-gray-800/50 p-3 rounded mb-3">
+                    <p className="text-gray-400 text-sm mb-1">Original URL:</p>
+                    <p className="text-gray-200 break-all">{url}</p>
+                  </div>
+                  <div className="bg-gray-800/50 p-3 rounded mb-3">
+                    <p className="text-gray-400 text-sm mb-1">Short URL:</p>
+                    <p className="text-blue-400 break-all">{`${url_base}/${data.id}`}</p>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center mt-4">
+                  <div className="text-gray-400 text-sm">
+                    <span className="inline-flex items-center">
+                      <Clock className="mr-1" size={16} />
+                      Never Expires
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleCopy}
+                    className={`${
+                      copied ? "bg-blue-600" : "bg-blue-600 hover:bg-blue-500"
+                    } text-white px-4 py-2 rounded transition-colors duration-300 flex items-center`}
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="mr-1" size={16} />
+                        Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="mr-1" size={16} />
+                        Copy URL
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
 
         <div className="mt-12 text-center text-gray-400 text-sm">
           <p className="flex items-center justify-center">
-            <LinkIcon className="mr-2" size={14} />
+            <LockKeyhole className="mr-2" size={14} />
             Secure, fast, and reliable URL shortening service.
           </p>
         </div>

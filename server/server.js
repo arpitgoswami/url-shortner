@@ -29,9 +29,9 @@ app.post("/api/short", async (req, res) => {
       return res.status(400).json({ error: "Website URL is required" });
     }
 
-    let id = Math.floor(Math.random() * 100000000)
+    let id = Math.floor(Math.random() * 100000)
       .toString()
-      .padStart(8, "0");
+      .padStart(5, "0");
 
     const newUrl = new Urls({ id, website });
 
