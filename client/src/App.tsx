@@ -1,3 +1,9 @@
+import {
+  Description,
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
 import { FormEvent, useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -10,6 +16,7 @@ import {
   Loader,
   QrCode,
   LockKeyhole,
+  CirclePlus,
 } from "lucide-react";
 import "./index.css";
 
@@ -21,7 +28,9 @@ function App() {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [qrCodeSvg, setQrCodeSvg] = useState<string>("");
 
-  const url_base = "https://stake-mines-1.onrender.com";
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const url_base = "https://mo.ct.ws";
 
   useEffect(() => {
     if (data?.id) {
@@ -34,11 +43,15 @@ function App() {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${url_base}/api/short`, {
-        website: url,
-      });
+      const response = await axios.post(
+        "https://link-shotner-app-fwf8d7etd7ebcke8.canadacentral-01.azurewebsites.net/api/short",
+        {
+          website: url,
+        }
+      );
 
       setData(response.data);
+      setIsOpen(true);
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -211,30 +224,39 @@ function App() {
                 </div>
 
                 <div className="flex justify-between items-center mt-4">
-                  <div className="text-gray-400 text-sm">
+                  <div className="text-gray-400 text-xs md:text-sm">
                     <span className="inline-flex items-center">
                       <Clock className="mr-1" size={16} />
                       Never Expires
                     </span>
                   </div>
-                  <button
-                    onClick={handleCopy}
-                    className={`${
-                      copied ? "bg-blue-600" : "bg-blue-600 hover:bg-blue-500"
-                    } text-white px-4 py-2 rounded transition-colors duration-300 flex items-center`}
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="mr-1" size={16} />
-                        Copied
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="mr-1" size={16} />
-                        Copy URL
-                      </>
-                    )}
-                  </button>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="bg-blue-600 hover:bg-blue-500 text-white text-sm md:text-base px-4 py-2 rounded transition-colors duration-300 flex items-center"
+                    >
+                      <CirclePlus className="mr-1" size={16} />
+                      Create New
+                    </button>
+                    <button
+                      onClick={handleCopy}
+                      className={`${
+                        copied ? "bg-blue-600" : "bg-blue-600 hover:bg-blue-500"
+                      } text-white px-4 py-2 rounded text-sm md:text-base transition-colors duration-300 flex items-center`}
+                    >
+                      {copied ? (
+                        <>
+                          <Check className="mr-1" size={16} />
+                          Copied
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="mr-1" size={16} />
+                          Copy URL
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -248,6 +270,45 @@ function App() {
           </p>
         </div>
       </div>
+
+      <Dialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        className="relative z-50"
+      >
+        <div
+          className="fixed inset-0 bg-black opacity-50"
+          aria-hidden="true"
+        ></div>
+
+        <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
+          <DialogPanel className="max-w-lg space-y-4 border bg-white p-8 shadow-lg">
+            <DialogTitle className="font-bold text-xl">
+              Support the Author
+            </DialogTitle>
+            <Description className="text-gray-600">
+              If you enjoy my work, consider buying me a coffee to support
+              future projects!
+            </Description>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="cursor-pointer px-4 py-2 bg-black text-white hover:bg-gray-800 transition"
+              >
+                😭 Cancel
+              </button>
+              <a
+                href="https://buymeacoffee.com/arpitgoswami"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-black text-white hover:bg-gray-800 transition"
+              >
+                ☕ Buy Me a Coffee
+              </a>
+            </div>
+          </DialogPanel>
+        </div>
+      </Dialog>
     </div>
   );
 }

@@ -85,3 +85,7 @@ input:focus {
   background-size: 200% 200%;
   animation: gradient-rotate 3s ease infinite;
 }
+
+body {
+  cursor: url("/cursor.svg"), auto;
+}
