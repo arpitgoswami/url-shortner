@@ -44,3 +44,22 @@ input:focus {
   pointer-events: none;
   transition-duration: 0.4s;
 }
+
+/* Add these styles to your index.css file */
+
+@keyframes gradient-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-rotate {
+  background-size: 200% 200%;
+  animation: gradient-rotate 3s ease infinite;
+}
