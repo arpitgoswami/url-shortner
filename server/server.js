@@ -16,7 +16,7 @@ PORT = process.env.PORT;
 
 mongoose
   .connect(
-    "mongodb+srv://syiedelta:TuD_i%40z9wuR9FJm@primary-cluster.lajeaaa.mongodb.net/"
+    "mongodb+srv://syiedelta:TuD_i%40z9wuR9FJm@primary-cluster.lajeaaa.mongodb.net/link-shortner?retryWrites=true&w=majority"
   )
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log("Error: ", err));
