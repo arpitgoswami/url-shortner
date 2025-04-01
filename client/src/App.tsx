@@ -44,7 +44,7 @@ function App() {
 
     try {
       const response = await axios.post(
-        "https://link-shotner-app-fwf8d7etd7ebcke8.canadacentral-01.azurewebsites.net/api/short",
+        "https://url-shortner-ldyh.onrender.com/api/short",
         {
           website: url,
         }
