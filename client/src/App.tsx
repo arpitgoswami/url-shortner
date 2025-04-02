@@ -44,7 +44,7 @@ function App() {
 
     try {
       const response = await axios.post(
-        "https://url-shortner-ldyh.onrender.com/api/short",
+        "http://ec2-18-208-156-75.compute-1.amazonaws.com/api/short",
         {
           website: url,
         }
