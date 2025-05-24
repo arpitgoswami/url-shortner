@@ -59,6 +59,6 @@ app.get("/:id", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`App is listening on port ${PORT}`);
 });

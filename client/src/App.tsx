@@ -43,9 +43,12 @@ function App() {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:3000/api/short", {
-        website: url,
-      });
+      const response = await axios.post(
+        "https://short.skillyatra.live/backend/api/short",
+        {
+          website: url,
+        }
+      );
 
       setData(response.data);
       setIsOpen(true);
